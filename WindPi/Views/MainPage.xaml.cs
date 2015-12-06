@@ -2,13 +2,11 @@
 using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
+using GHIElectronics.UWP.Shields;
 using WindPi.Helpers;
 using WindPi.ViewModels;
 
-using GHIElectronics.UWP.Shields;
-
-namespace WindPi
+namespace WindPi.Views
 {
     public sealed partial class MainPage : Page
     {
@@ -28,7 +26,7 @@ namespace WindPi
 
             InitializeComponent();
 
-            Debugging.WriteDisplayInfo();
+            Debug.WriteLine(Debugging.GetDisplayInfo());
         }
         
         private async void SetupHat()

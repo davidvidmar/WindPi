@@ -1,8 +1,8 @@
 ﻿<Page
-    x:Class="WindPi.MainPage"
+    x:Class="WindPi.Views.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:WindPi"
+    xmlns:local="using:WindPi.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:helpers="using:WindPi.Helpers"
@@ -15,7 +15,7 @@
     
     <Grid>
         <Grid.Background>
-            <ImageBrush Stretch="UniformToFill" ImageSource="Assets/Background.jpg"/>
+            <ImageBrush Stretch="UniformToFill" ImageSource="../Assets/Background.jpg"/>
         </Grid.Background>
 
         <Grid Margin="20" >
@@ -31,6 +31,8 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
+            <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Bottom" Text="{x:Bind ViewModel.Version}" Foreground="Gray" FontSize="14"></TextBlock>
+            
             <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
                 <TextBlock Text="Hitrost vetra:" />
                 <TextBlock Text="Temperatura:" />

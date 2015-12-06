@@ -58,6 +58,7 @@ namespace WindConsole
                 var eventData = await eventHubReceiver.ReceiveAsync();
                 if (eventData == null) continue;
                 var data = Encoding.UTF8.GetString(eventData.GetBytes());
+
                 Console.WriteLine("Message received. Partition: {0} Data: '{1}'", partition, data);
             }
         }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Text;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
+using WindPi.Helpers;
 using WindPi.Models;
 
 namespace WindPi.ViewModels
@@ -16,16 +17,17 @@ namespace WindPi.ViewModels
 
         private readonly DeviceClient _deviceClient;
 
-        public SensorsData Sensors { get; private set; }
-        public WindData Wind { get; private set; }
+        public SensorsData Sensors { get; }
+        public WindData Wind { get; }
+        public string Version { get; }
 
         public SensorsViewModel()
         {
+            Version = Debugging.GetAppVersion();
+
             Sensors = new SensorsData();
-            Wind = new WindData();
-
-            Wind.CurrentWindSpeed = 10;
-
+            Wind = new WindData {CurrentWindSpeed = 10};
+            
             _deviceClient = DeviceClient.Create(IotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(DeviceId, DeviceKey), TransportType.Http1);
         }
 
