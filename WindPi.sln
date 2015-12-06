@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindyPi", "WindyPi\WindyPi.csproj", "{07975D7F-C923-4718-B593-A7F33BE8B455}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindPi", "WindPi\WindPi.csproj", "{07975D7F-C923-4718-B593-A7F33BE8B455}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindConsole", "WindConsole\WindConsole.csproj", "{7A2C19D4-9A95-46C4-9E6A-F92515F76204}"
 EndProject

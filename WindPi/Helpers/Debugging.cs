@@ -3,7 +3,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
 
-namespace WindyPi.Helpers
+namespace WindPi.Helpers
 {
     internal class Debugging
     {

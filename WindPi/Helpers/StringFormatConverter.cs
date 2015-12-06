@@ -1,7 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Data;
 
-namespace WindyPi.Helpers
+namespace WindPi.Helpers
 {
     public class StringFormatConverter : IValueConverter
     {

@@ -3,12 +3,12 @@ using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-using WindyPi.Helpers;
-using WindyPi.ViewModels;
+using WindPi.Helpers;
+using WindPi.ViewModels;
 
 using GHIElectronics.UWP.Shields;
 
-namespace WindyPi
+namespace WindPi
 {
     public sealed partial class MainPage : Page
     {

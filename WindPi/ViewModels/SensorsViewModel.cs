@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Text;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
-using WindyPi.Models;
+using WindPi.Models;
 
-namespace WindyPi.ViewModels
+namespace WindPi.ViewModels
 {
     public class SensorsViewModel
     {

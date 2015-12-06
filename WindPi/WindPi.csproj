@@ -7,8 +7,8 @@
     <ProjectGuid>{07975D7F-C923-4718-B593-A7F33BE8B455}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WindyPi</RootNamespace>
-    <AssemblyName>WindyPi</AssemblyName>
+    <RootNamespace>WindPi</RootNamespace>
+    <AssemblyName>WindPi</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>

@@ -1,8 +1,8 @@
 ﻿<Application
-    x:Class="WindyPi.App"
+    x:Class="WindPi.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:WindyPi"
+    xmlns:local="using:WindPi"
     RequestedTheme="Light">
     <Application.Resources>
         <Style TargetType="TextBlock">

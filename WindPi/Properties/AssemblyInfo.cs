@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("WindyPi")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("WindPi")]
+[assembly: AssemblyDescription("Windows 10 IoT Core and IoT Hub demo app")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("David Vidmar")]
-[assembly: AssemblyProduct("WindyPi")]
+[assembly: AssemblyProduct("WindPi")]
 [assembly: AssemblyCopyright("Copyright © David Vidmar 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

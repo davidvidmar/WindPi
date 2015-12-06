@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace WindyPi.Models
+namespace WindPi.Models
 {
     public class SensorsData : INotifyPropertyChanged
     {
