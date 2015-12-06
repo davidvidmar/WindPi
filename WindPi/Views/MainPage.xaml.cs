@@ -54,9 +54,13 @@ namespace WindPi.Views
             
             Debug.WriteLine($"Temperature: {ViewModel.Sensors.Temperature:N2} °C, Light {ViewModel.Sensors.Lightness:P2}");
 
-            // Wind
+            // Send Data to Cloud
             ViewModel.SendDeviceToCloudMessagesAsync();
 
+            // Receive Messages from Cloud
+            ViewModel.ReceiveCloudToDeviceAsync();            
         }
+
+        
     }
 }

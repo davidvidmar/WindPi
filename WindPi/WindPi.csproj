@@ -95,8 +95,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\BoolToVisibilityConverter.cs" />
     <Compile Include="Helpers\Debugging.cs" />
     <Compile Include="Helpers\StringFormatConverter.cs" />
+    <Compile Include="Models\CloudCommand.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

@@ -11,8 +11,9 @@
 
     <Page.Resources>
         <helpers:StringFormatConverter x:Key="StringFormatConverter" />
+        <helpers:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     </Page.Resources>
-    
+
     <Grid>
         <Grid.Background>
             <ImageBrush Stretch="UniformToFill" ImageSource="../Assets/Background.jpg"/>
@@ -21,7 +22,7 @@
         <Grid Margin="20" >
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="60*"/>
+                <ColumnDefinition Width="50*"/>
                 <ColumnDefinition Width="30*"/>
                 <ColumnDefinition Width="20*"/>
             </Grid.ColumnDefinitions>
@@ -31,28 +32,28 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Bottom" Text="{x:Bind ViewModel.Version}" Foreground="Gray" FontSize="14"></TextBlock>
-            
+            <StackPanel Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock FontWeight="Bold" Padding="0,0,0,10" Text="NE OBRATUJE" Foreground="Red" Visibility="{x:Bind ViewModel.Wind.Running, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter='Collapsed'}" />
+                <TextBlock FontWeight="Bold" Padding="0,0,0,10" Text="OBRATUJE" Foreground="Green" Visibility="{x:Bind ViewModel.Wind.Running, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    
+                <TextBlock Text="Izhodna moč:" />
+                <TextBlock Text="{x:Bind ViewModel.Wind.PowerOutput, Mode=OneWay, FallbackValue='0,0 kW', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} kW'}" FontWeight="Bold" />
+            </StackPanel>
+
             <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
-                <TextBlock Text="Hitrost vetra:" />
+                <TextBlock Text="Hitrost vetra:" Padding="0,0,0,10" />
                 <TextBlock Text="Temperatura:" />
                 <TextBlock Text="Svetloba:" />
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
-                
-            </StackPanel>
-
             <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
-                <TextBlock Text="{x:Bind ViewModel.Wind.CurrentWindSpeed, Mode=OneWay, FallbackValue='0,0', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1}'}" FontWeight="Bold"></TextBlock>
-                <TextBlock Text="{x:Bind ViewModel.Sensors.Temperature, Mode=OneWay, FallbackValue='0,0', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1}'}" FontWeight="Bold"></TextBlock>
-                <TextBlock Text="{x:Bind ViewModel.Sensors.Lightness, Mode=OneWay, FallbackValue='0 %', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:P0}'}" FontWeight="Bold"></TextBlock>
+                <TextBlock Text="{x:Bind ViewModel.Wind.CurrentWindSpeed, Mode=OneWay, FallbackValue='0,0', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} m/s'}" FontWeight="Bold" Padding="0,0,0,10" />
+                <TextBlock Text="{x:Bind ViewModel.Sensors.Temperature, Mode=OneWay, FallbackValue='0,0', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} °C'}" FontWeight="Bold" />
+                <TextBlock Text="{x:Bind ViewModel.Sensors.Lightness, Mode=OneWay, FallbackValue='0 %', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:P0}'}" FontWeight="Bold" />
                 <!--<TextBlock Text="{x:Bind ViewModel.Sensors.Lightness, Mode=OneWay, FallbackValue='0 %', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:P0}'}" FontWeight="Bold"></TextBlock>-->
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
-                
-            </StackPanel>
+            <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Bottom" Text="{x:Bind ViewModel.Version}" Foreground="Gray" FontSize="14"></TextBlock>
 
         </Grid>
 

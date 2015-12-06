@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Text;
+using Windows.Media.Effects;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
 using WindPi.Helpers;
@@ -19,30 +20,46 @@ namespace WindPi.ViewModels
 
         public SensorsData Sensors { get; }
         public WindData Wind { get; }
-        public string Version { get; }
+
+        public string Version { get; }       
 
         public SensorsViewModel()
         {
             Version = Debugging.GetAppVersion();
 
             Sensors = new SensorsData();
-            Wind = new WindData();
-            
+            Wind = new WindData {Running = true};
+
             _deviceClient = DeviceClient.Create(IotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(DeviceId, DeviceKey), TransportType.Http1);
         }
 
         public async void SendDeviceToCloudMessagesAsync()
         {            
             var rand = new Random();
-            Wind.CurrentWindSpeed = Wind.CurrentWindSpeed + rand.NextDouble() * 4 - 2;
 
-            if (Wind.CurrentWindSpeed < 10) Wind.CurrentWindSpeed = 10;
-            if (Wind.CurrentWindSpeed > 100) Wind.CurrentWindSpeed = 100;
+            if (Wind.Running)
+            {
+                Wind.CurrentWindSpeed = Wind.CurrentWindSpeed + rand.NextDouble() * 4 - 2;
+
+                if (Wind.CurrentWindSpeed < 10) Wind.CurrentWindSpeed = 10;
+                if (Wind.CurrentWindSpeed > 100) Wind.CurrentWindSpeed = 100;
+
+                // TODO: TEST!!!!
+                if (Wind.CurrentWindSpeed > 20) Wind.Running = false;
+
+                Wind.EffectiveWindSpeed = Wind.CurrentWindSpeed;
+            }
+            else
+            {
+                if (Wind.EffectiveWindSpeed > 0) Wind.EffectiveWindSpeed -= 3.5;
+                if (Wind.EffectiveWindSpeed < 0) Wind.EffectiveWindSpeed = 0;
+            }
 
             var telemetryDataPoint = new
             {
                 deviceId = DeviceId,
                 windSpeed = Wind.CurrentWindSpeed,
+                powerOutput = Wind.PowerOutput,
                 temperatue = Sensors.Temperature,
                 light = Sensors.Lightness
             };
@@ -54,5 +71,31 @@ namespace WindPi.ViewModels
             Debug.WriteLine("{0} > Sending message: {1}", DateTime.Now, messageString);            
         }
 
+        public async void ReceiveCloudToDeviceAsync()
+        {
+            var receivedMessage = await _deviceClient.ReceiveAsync();
+            if (receivedMessage == null) return;
+
+            var message = Encoding.ASCII.GetString(receivedMessage.GetBytes());
+            
+            await _deviceClient.CompleteAsync(receivedMessage);
+
+            ProcessMessage(message);
+        }
+
+        private void ProcessMessage(string message)
+        {
+            var command = (CloudCommand)JsonConvert.DeserializeObject(message);
+            switch (command.Command)
+            {
+                case "STOP":
+                    Wind.Running = false;
+                    break;
+                case "START":
+                    Wind.Running = true;
+                    break;
+                
+            }
+        }
     }
 }

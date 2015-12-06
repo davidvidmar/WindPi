@@ -6,12 +6,46 @@ namespace WindPi.Models
     public class WindData : INotifyPropertyChanged
     {
         private double _currentWindSpeed;
+        private double _effectiveWindSpeed;
+        private bool _running;
 
         public double CurrentWindSpeed
         {
             get { return _currentWindSpeed; }
-            set { _currentWindSpeed = value; OnPropertyChanged(); }
+            set {
+                _currentWindSpeed = value;
+                OnPropertyChanged();                
+            }
         }
+
+        public double EffectiveWindSpeed
+        {
+            get { return _effectiveWindSpeed; }
+            set
+            {
+                _effectiveWindSpeed = value;
+                OnPropertyChanged();
+                OnPropertyChanged("PowerOutput");
+            }
+        }
+
+        public double PowerOutput
+        {
+            get
+            {
+                if (!Running) return 0;
+                return EffectiveWindSpeed / 5.0 + 4.0;
+            }
+        }
+        public bool Running {
+            get { return _running; }
+            set
+            {
+                if (_running == value) return;
+                _running = value;
+                OnPropertyChanged();
+            }
+        }    
 
         public event PropertyChangedEventHandler PropertyChanged;
 
