@@ -37,16 +37,16 @@ namespace WindPi.ViewModels
         {            
             var rand = new Random();
 
+            Wind.CurrentWindSpeed = Wind.CurrentWindSpeed + rand.NextDouble() * 4 - 2;
+
+            if (Wind.CurrentWindSpeed < 10) Wind.CurrentWindSpeed = 10;
+            if (Wind.CurrentWindSpeed > 100) Wind.CurrentWindSpeed = 100;
+
+            // TODO: TEST!!!!
+            if (Wind.CurrentWindSpeed > 20) Wind.Running = false;
+
             if (Wind.Running)
-            {
-                Wind.CurrentWindSpeed = Wind.CurrentWindSpeed + rand.NextDouble() * 4 - 2;
-
-                if (Wind.CurrentWindSpeed < 10) Wind.CurrentWindSpeed = 10;
-                if (Wind.CurrentWindSpeed > 100) Wind.CurrentWindSpeed = 100;
-
-                // TODO: TEST!!!!
-                if (Wind.CurrentWindSpeed > 20) Wind.Running = false;
-
+            {            
                 Wind.EffectiveWindSpeed = Wind.CurrentWindSpeed;
             }
             else

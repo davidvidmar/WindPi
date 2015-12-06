@@ -45,9 +45,17 @@ namespace WindPi.Views
             _tick = !_tick;
 
             // blink, blink
-            _hat.D2.Color = _tick ? _colorA : _colorB;
-            _hat.D3.Color = _tick ? _colorB : _colorA;
-            
+            if (ViewModel.Wind.Running)
+            {
+                _hat.D2.Color = _tick ? _colorA : _colorB;
+                _hat.D3.Color = _tick ? _colorB : _colorA;
+            }
+            else
+            {
+                _hat.D2.Color = FEZHAT.Color.Red;
+                _hat.D3.Color = FEZHAT.Color.Red;
+            }
+
             // Light & Temp sensor
             ViewModel.Sensors.Lightness = _hat.GetLightLevel();                        
             ViewModel.Sensors.Temperature = _hat.GetTemperature();

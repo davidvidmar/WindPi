@@ -19,7 +19,7 @@
             <ImageBrush Stretch="UniformToFill" ImageSource="../Assets/Background.jpg"/>
         </Grid.Background>
 
-        <Grid Margin="20" >
+        <Grid Margin="32,20" >
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="50*"/>
