@@ -26,7 +26,7 @@ namespace WindPi.ViewModels
             Version = Debugging.GetAppVersion();
 
             Sensors = new SensorsData();
-            Wind = new WindData {CurrentWindSpeed = 10};
+            Wind = new WindData();
             
             _deviceClient = DeviceClient.Create(IotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(DeviceId, DeviceKey), TransportType.Http1);
         }
@@ -34,14 +34,19 @@ namespace WindPi.ViewModels
         public async void SendDeviceToCloudMessagesAsync()
         {            
             var rand = new Random();
-
             Wind.CurrentWindSpeed = Wind.CurrentWindSpeed + rand.NextDouble() * 4 - 2;
+
+            if (Wind.CurrentWindSpeed < 10) Wind.CurrentWindSpeed = 10;
+            if (Wind.CurrentWindSpeed > 100) Wind.CurrentWindSpeed = 100;
 
             var telemetryDataPoint = new
             {
-                deviceId = "myFirstDevice",
-                windSpeed = Wind.CurrentWindSpeed
+                deviceId = DeviceId,
+                windSpeed = Wind.CurrentWindSpeed,
+                temperatue = Sensors.Temperature,
+                light = Sensors.Lightness
             };
+
             var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
             var message = new Message(Encoding.ASCII.GetBytes(messageString));
 
