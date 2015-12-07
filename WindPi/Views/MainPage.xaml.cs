@@ -66,7 +66,13 @@ namespace WindPi.Views
             ViewModel.SendDeviceToCloudMessagesAsync();
 
             // Receive Messages from Cloud
-            ViewModel.ReceiveCloudToDeviceAsync();            
+            ViewModel.ReceiveCloudToDeviceAsync();
+
+            // Turn on/off from buttons on Hat
+            if (_hat.IsDIO18Pressed() || _hat.IsDIO22Pressed())
+            {
+                ViewModel.Wind.Running = !ViewModel.Wind.Running;
+            }     
         }
 
         
