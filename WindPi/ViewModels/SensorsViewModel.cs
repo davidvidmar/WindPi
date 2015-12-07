@@ -87,9 +87,8 @@ namespace WindPi.ViewModels
         }
 
         private void ProcessMessage(string message)
-        {
-            var command = (CloudCommand)JsonConvert.DeserializeObject(message);
-            switch (command.Command)
+        {            
+            switch (message)
             {
                 case "STOP":
                     Wind.Running = false;
