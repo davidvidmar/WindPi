@@ -34,7 +34,7 @@ namespace WindPi.Models
             get
             {
                 if (EffectiveWindSpeed <= 0.0) return 0;
-                return EffectiveWindSpeed / 3.0 + 2.0;
+                return EffectiveWindSpeed / 3.5 + 1.0;
             }
         }
         public bool Running {

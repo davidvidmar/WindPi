@@ -1,9 +1,7 @@
 using System;
-using System.Diagnostics;
 using System.Text;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
-using WindPi.Helpers;
 using WindPi.Models;
 
 namespace WindPi.ViewModels
@@ -11,9 +9,7 @@ namespace WindPi.ViewModels
     public class SensorsViewModel
     {
         private const string IotHubUri = "WindHub.azure-devices.net";
-
         private const string DeviceId = "RPi-Wind-1";
-
         private const string DeviceKey = "aaRE0MhoR5XQBZTecv3VO5mfPymgOJtmbYn4ZusGlzU=";
 
         private readonly DeviceClient _deviceClient;
@@ -28,8 +24,7 @@ namespace WindPi.ViewModels
             Wind = new WindData {Running = true};
             Debug = new DebugData();
 
-            _deviceClient = DeviceClient.Create(IotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(DeviceId, DeviceKey), TransportType.Http1);
-                        
+            _deviceClient = DeviceClient.Create(IotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(DeviceId, DeviceKey), TransportType.Http1);                        
         }
 
         public async void SendDeviceToCloudMessagesAsync()
@@ -47,7 +42,7 @@ namespace WindPi.ViewModels
             }
             else
             {
-                if (Wind.EffectiveWindSpeed > 0) Wind.EffectiveWindSpeed -= 0.6;
+                if (Wind.EffectiveWindSpeed > 0) Wind.EffectiveWindSpeed -= 0.9;
                 if (Wind.EffectiveWindSpeed < 0) Wind.EffectiveWindSpeed = 0;
             }
 

@@ -19,7 +19,6 @@ namespace WindPi.Views
         private readonly FEZHAT.Color _colorA = FEZHAT.Color.Blue;
         private readonly FEZHAT.Color _colorB = FEZHAT.Color.Green;
 
-
         public MainPage()
         {
             SetupHat();
@@ -34,9 +33,7 @@ namespace WindPi.Views
             _hat = await FEZHAT.CreateAsync();
 
             _timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(500)};
-
             _timer.Tick += Timer_Tick;
-
             _timer.Start();
         }
 
@@ -49,6 +46,11 @@ namespace WindPi.Views
             {
                 _hat.D2.Color = _tick ? _colorA : _colorB;
                 _hat.D3.Color = _tick ? _colorB : _colorA;
+            }
+            else if (ViewModel.Wind.PowerOutput > 0)
+            {
+                _hat.D2.Color = _tick ? FEZHAT.Color.Red : FEZHAT.Color.Black;
+                _hat.D3.Color = _tick ? FEZHAT.Color.Black : FEZHAT.Color.Red;
             }
             else
             {
