@@ -4,34 +4,55 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Devices;
 using Microsoft.Azure.Devices.Common.Exceptions;
 using Microsoft.ServiceBus.Messaging;
+using WindConsole.Properties;
 
 namespace WindConsole
 {
     internal static class Program
     {
         private static RegistryManager _registryManager;
-        private const string ConnectionString = "HostName=WindHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=Qim461LUqPRvfkSsdpRlq1CRNjII3cg++lViTnDVqTk=";
 
-        private static string _iotHubD2CEndpoint = "messages/events";
+        private const string IotHubD2CEndpoint = "messages/events";
         private static EventHubClient _eventHubClient;
 
-        static void Main()
+        private static void Main()
         {
-            _registryManager = RegistryManager.CreateFromConnectionString(ConnectionString);
+            _registryManager = RegistryManager.CreateFromConnectionString(Settings.Default.IotHubConnectionString);
 
-            Console.WriteLine("Adding device to IoT hub...");
-            AddDeviceAsync().Wait();
-
-            Console.WriteLine("Receive messages:\n");
-            _eventHubClient = EventHubClient.CreateFromConnectionString(ConnectionString, _iotHubD2CEndpoint);
-
-            var d2CPartitions = _eventHubClient.GetRuntimeInformation().PartitionIds;
-            foreach (var partition in d2CPartitions)
+            try
             {
-                ReceiveMessagesFromDeviceAsync(partition);
+                Console.WriteLine("Adding device to IoT hub...\n");
+                AddDeviceAsync().Wait();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failed to add device: " + ex.Message);
+                if (ex.InnerException != null)
+                    Console.WriteLine("Inner exception: " + ex.InnerException.Message);
+                Console.WriteLine();
             }
 
-            Console.WriteLine("\nPress Enter to continue.");
+            Console.WriteLine("Receiving messages...\n");
+
+            try
+            {
+                _eventHubClient = EventHubClient.CreateFromConnectionString(Settings.Default.IotHubConnectionString, IotHubD2CEndpoint);
+
+                var d2CPartitions = _eventHubClient.GetRuntimeInformation().PartitionIds;
+                foreach (var partition in d2CPartitions)
+                {
+                    ReceiveMessagesFromDeviceAsync(partition).Wait();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Failure listening for messages: " + ex.Message);
+                if (ex.InnerException != null)
+                    Console.WriteLine("Inner exception: " + ex.InnerException.Message);
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("Press Enter to continue.");
             Console.ReadLine();
         }
 
@@ -47,7 +68,7 @@ namespace WindConsole
             {
                 device = await _registryManager.GetDeviceAsync(deviceId);
             }
-            Console.WriteLine("Generated device key: {0}", device.Authentication.SymmetricKey.PrimaryKey);
+            Console.WriteLine("Generated device key: {0}\n", device.Authentication.SymmetricKey.PrimaryKey);
         }
 
         private static async Task ReceiveMessagesFromDeviceAsync(string partition)

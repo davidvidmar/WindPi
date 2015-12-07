@@ -1,0 +1,9 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="WindConsole.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="IotHubConnectionString" Type="System.String" Scope="User">
+      <Value Profile="(Default)">HostName=WindHub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=Qim461LUqPRvfkSsdpRlq1CRNjII3cg++lViTnDVqTk=</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
