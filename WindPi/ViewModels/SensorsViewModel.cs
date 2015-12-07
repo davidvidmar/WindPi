@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.Text;
-using Windows.Media.Effects;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
 using WindPi.Helpers;
@@ -14,6 +13,7 @@ namespace WindPi.ViewModels
         private const string IotHubUri = "WindHub.azure-devices.net";
 
         private const string DeviceId = "RPi-Wind-1";
+
         private const string DeviceKey = "aaRE0MhoR5XQBZTecv3VO5mfPymgOJtmbYn4ZusGlzU=";
 
         private readonly DeviceClient _deviceClient;
@@ -31,6 +31,7 @@ namespace WindPi.ViewModels
             Wind = new WindData {Running = true};
 
             _deviceClient = DeviceClient.Create(IotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(DeviceId, DeviceKey), TransportType.Http1);
+                        
         }
 
         public async void SendDeviceToCloudMessagesAsync()
@@ -39,11 +40,11 @@ namespace WindPi.ViewModels
 
             Wind.CurrentWindSpeed = Wind.CurrentWindSpeed + rand.NextDouble() * 4 - 2;
 
-            if (Wind.CurrentWindSpeed < 10) Wind.CurrentWindSpeed = 10;
-            if (Wind.CurrentWindSpeed > 100) Wind.CurrentWindSpeed = 100;
+            if (Wind.CurrentWindSpeed < 5) Wind.CurrentWindSpeed = 5;
+            if (Wind.CurrentWindSpeed > 30) Wind.CurrentWindSpeed = 30;
 
-            // TODO: TEST!!!!
-            if (Wind.CurrentWindSpeed > 20) Wind.Running = false;
+            //// Samo za TEST ugašanja!!!!
+            //if (Wind.CurrentWindSpeed > 20) Wind.Running = false;
 
             if (Wind.Running)
             {            
@@ -51,7 +52,7 @@ namespace WindPi.ViewModels
             }
             else
             {
-                if (Wind.EffectiveWindSpeed > 0) Wind.EffectiveWindSpeed -= 3.5;
+                if (Wind.EffectiveWindSpeed > 0) Wind.EffectiveWindSpeed -= 0.6;
                 if (Wind.EffectiveWindSpeed < 0) Wind.EffectiveWindSpeed = 0;
             }
 
