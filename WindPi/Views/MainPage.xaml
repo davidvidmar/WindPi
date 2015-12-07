@@ -47,13 +47,22 @@
             </StackPanel>
 
             <StackPanel Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
-                <TextBlock Text="{x:Bind ViewModel.Wind.CurrentWindSpeed, Mode=OneWay, FallbackValue='0,0', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} m/s'}" FontWeight="Bold" Padding="0,0,0,10" />
-                <TextBlock Text="{x:Bind ViewModel.Sensors.Temperature, Mode=OneWay, FallbackValue='0,0', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} °C'}" FontWeight="Bold" />
-                <TextBlock Text="{x:Bind ViewModel.Sensors.Lightness, Mode=OneWay, FallbackValue='0 %', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:P0}'}" FontWeight="Bold" />
+                <TextBlock Text="{x:Bind ViewModel.Wind.CurrentWindSpeed, Mode=OneWay, FallbackValue='0,0', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} m/s'}" FontWeight="Bold" Padding="0,0,0,10" HorizontalAlignment="Right" />
+                <TextBlock Text="{x:Bind ViewModel.Sensors.Temperature, Mode=OneWay, FallbackValue='0,0', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:N1} °C'}" FontWeight="Bold" HorizontalAlignment="Right" />
+                <TextBlock Text="{x:Bind ViewModel.Sensors.Lightness, Mode=OneWay, FallbackValue='0 %', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:P0}'}" FontWeight="Bold" HorizontalAlignment="Right" />
                 <!--<TextBlock Text="{x:Bind ViewModel.Sensors.Lightness, Mode=OneWay, FallbackValue='0 %', Converter={StaticResource StringFormatConverter}, ConverterParameter='{}{0:P0}'}" FontWeight="Bold"></TextBlock>-->
             </StackPanel>
 
-            <TextBlock Grid.Column="0" Grid.Row="1" VerticalAlignment="Bottom" Text="{x:Bind ViewModel.Version}" Foreground="Gray" FontSize="14"></TextBlock>
+            <StackPanel Grid.Column="0" Grid.Row="1" VerticalAlignment="Bottom">
+                <TextBlock Text="{x:Bind ViewModel.Debug.Version}" Foreground="Gray" FontSize="14" Margin="0,0,8,0" />
+                <TextBlock Text="{x:Bind ViewModel.Debug.LocalIP}" Foreground="Gray" FontSize="14" />    
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <TextBlock Text="Last message sent:" Foreground="Gray" FontSize="14" Margin="0,0,8,0" HorizontalAlignment="Right" />
+                <TextBlock Text="{x:Bind ViewModel.Debug.LastMessageSent, Mode=OneWay}" Foreground="Gray" FontSize="14" Margin="0,0,8,0" HorizontalAlignment="Right" />
+            </StackPanel>
+
 
         </Grid>
 

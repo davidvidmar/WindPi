@@ -20,15 +20,13 @@ namespace WindPi.ViewModels
 
         public SensorsData Sensors { get; }
         public WindData Wind { get; }
-
-        public string Version { get; }       
+        public DebugData Debug { get; }
 
         public SensorsViewModel()
         {
-            Version = Debugging.GetAppVersion();
-
             Sensors = new SensorsData();
             Wind = new WindData {Running = true};
+            Debug = new DebugData();
 
             _deviceClient = DeviceClient.Create(IotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(DeviceId, DeviceKey), TransportType.Http1);
                         
@@ -42,9 +40,6 @@ namespace WindPi.ViewModels
 
             if (Wind.CurrentWindSpeed < 5) Wind.CurrentWindSpeed = 5;
             if (Wind.CurrentWindSpeed > 30) Wind.CurrentWindSpeed = 30;
-
-            //// Samo za TEST ugašanja!!!!
-            //if (Wind.CurrentWindSpeed > 20) Wind.Running = false;
 
             if (Wind.Running)
             {            
@@ -65,11 +60,23 @@ namespace WindPi.ViewModels
                 light = Sensors.Lightness
             };
 
-            var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
-            var message = new Message(Encoding.ASCII.GetBytes(messageString));
+            try
+            {
+                var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
+                var message = new Message(Encoding.ASCII.GetBytes(messageString));
 
-            await _deviceClient.SendEventAsync(message);
-            Debug.WriteLine("{0} > Sending message: {1}", DateTime.Now, messageString);            
+                await _deviceClient.SendEventAsync(message);
+
+                System.Diagnostics.Debug.WriteLine("{0} > Sending message: {1}", DateTime.Now, messageString);
+
+                Debug.LastMessageSent = DateTime.Now.ToString();
+            }
+            catch (Exception ex)
+            {
+                Debug.LastMessageSent = "Error: " + ex.Message;
+                System.Diagnostics.Debug.WriteLine("{0} > Error sending message: {1}", DateTime.Now, ex.Message);
+            }
+            
         }
 
         public async void ReceiveCloudToDeviceAsync()

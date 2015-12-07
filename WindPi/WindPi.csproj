@@ -99,6 +99,7 @@
     <Compile Include="Helpers\Debugging.cs" />
     <Compile Include="Helpers\StringFormatConverter.cs" />
     <Compile Include="Models\CloudCommand.cs" />
+    <Compile Include="Models\DebugData.cs" />
     <Compile Include="Views\MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

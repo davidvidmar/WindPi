@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Linq;
 using Windows.ApplicationModel;
 using Windows.Foundation;
 using Windows.Graphics.Display;
+using Windows.Networking.Connectivity;
 using Windows.UI.ViewManagement;
 
 namespace WindPi.Helpers
@@ -30,6 +32,21 @@ namespace WindPi.Helpers
             var version = packageId.Version;
 
             return $"{version.Major}.{version.Minor}.{version.Build}.{version.Revision}";
+        }
+
+        public static string GetLocalIp()
+        {
+            var icp = NetworkInformation.GetInternetConnectionProfile();
+
+            if (icp?.NetworkAdapter == null) return null;
+            var hostname =
+                NetworkInformation.GetHostNames()
+                    .SingleOrDefault(
+                        hn => hn.IPInformation?.NetworkAdapter != null && 
+                              hn.IPInformation.NetworkAdapter.NetworkAdapterId == icp.NetworkAdapter.NetworkAdapterId);
+
+            // the ip address
+            return hostname?.CanonicalName;
         }
     }
 }
