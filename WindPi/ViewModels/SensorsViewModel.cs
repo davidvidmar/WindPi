@@ -1,34 +1,140 @@
 using System;
+using System.Globalization;
 using System.Text;
+using System.Threading.Tasks;
+using Windows.UI.Xaml;
+using GHIElectronics.UWP.Shields;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
+using WindPi.Helpers;
 using WindPi.Models;
 
 namespace WindPi.ViewModels
 {
+    /// <summary>
+    /// Class SensorsViewModel for working with sensors and Azure IOT hub
+    /// </summary>
     public class SensorsViewModel
     {
-        private const string IotHubUri = "WindHub.azure-devices.net";
-        private const string DeviceId = "RPi-Wind-1";
-        private const string DeviceKey = "aaRE0MhoR5XQBZTecv3VO5mfPymgOJtmbYn4ZusGlzU=";
-
+        /// <summary>
+        /// The _device client
+        /// </summary>
         private readonly DeviceClient _deviceClient;
 
-        public SensorsData Sensors { get; }
-        public WindData Wind { get; }
-        public DebugData Debug { get; }
+        /// <summary>
+        /// Gets the sensors.
+        /// </summary>
+        /// <value>The sensors.</value>
+        public SensorsData Sensors { get; } = new SensorsData();
 
+        /// <summary>
+        /// Gets the wind.
+        /// </summary>
+        /// <value>The wind.</value>
+        public WindData Wind { get; } = new WindData { Running = true };
+
+        /// <summary>
+        /// Gets the debug.
+        /// </summary>
+        /// <value>The debug.</value>
+        public DebugData Debug { get; } = new DebugData();
+
+        /// <summary>
+        /// The hat
+        /// </summary>
+        private FEZHAT hat;
+        /// <summary>
+        /// The timer
+        /// </summary>
+        private DispatcherTimer timer;
+        /// <summary>
+        /// The tick
+        /// </summary>
+        private bool tick;
+
+        /// <summary>
+        /// The color a
+        /// </summary>
+        private readonly FEZHAT.Color colorA = FEZHAT.Color.Blue;
+        /// <summary>
+        /// The color b
+        /// </summary>
+        private readonly FEZHAT.Color colorB = FEZHAT.Color.Green;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SensorsViewModel" /> class.
+        /// </summary>
         public SensorsViewModel()
         {
-            Sensors = new SensorsData();
-            Wind = new WindData {Running = true};
-            Debug = new DebugData();
-
-            _deviceClient = DeviceClient.Create(IotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(DeviceId, DeviceKey), TransportType.Http1);                        
+            _deviceClient = DeviceClient.Create(AppSettings.IotHubUri,
+                new DeviceAuthenticationWithRegistrySymmetricKey(AppSettings.DeviceId, AppSettings.DeviceKey),
+                TransportType.Http1);
         }
 
-        public async void SendDeviceToCloudMessagesAsync()
-        {            
+        /// <summary>
+        /// Initializes the sensors asynchronous.
+        /// </summary>
+        /// <returns>System.Threading.Tasks.Task.</returns>
+        public async Task InitSensorsAsync()
+        {
+            hat = await FEZHAT.CreateAsync();
+
+            timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+            timer.Tick += Timer_Tick;
+            timer.Start();
+        }
+
+        /// <summary>
+        /// Timer_s the tick.
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The e.</param>
+        private async void Timer_Tick(object sender, object e)
+        {
+            tick = !tick;
+
+            // blink, blink
+            if (Wind.Running)
+            {
+                hat.D2.Color = tick ? colorA : colorB;
+                hat.D3.Color = tick ? colorB : colorA;
+            }
+            else if (Wind.PowerOutput > 0)
+            {
+                hat.D2.Color = tick ? FEZHAT.Color.Red : FEZHAT.Color.Black;
+                hat.D3.Color = tick ? FEZHAT.Color.Black : FEZHAT.Color.Red;
+            }
+            else
+            {
+                hat.D2.Color = FEZHAT.Color.Red;
+                hat.D3.Color = FEZHAT.Color.Red;
+            }
+
+            // Light & Temp sensor
+            Sensors.Lightness = hat.GetLightLevel();
+            Sensors.Temperature = hat.GetTemperature();
+
+            //Debug.WriteLine($"Temperature: {Sensors.Temperature:N2} °C, Light {Sensors.Lightness:P2}");
+
+            // Send Data to Cloud
+            await SendDeviceToCloudMessagesAsync();
+
+            // Receive Messages from Cloud
+            await ReceiveCloudToDeviceAsync();
+
+            // Turn on/off from buttons on Hat
+            if (hat.IsDIO18Pressed() || hat.IsDIO22Pressed())
+            {
+                Wind.Running = !Wind.Running;
+            }
+        }
+
+        /// <summary>
+        /// send device to cloud messages as an asynchronous operation.
+        /// </summary>
+        /// <returns>System.Threading.Tasks.Task.</returns>
+        public async Task SendDeviceToCloudMessagesAsync()
+        {
             var rand = new Random();
 
             Wind.CurrentWindSpeed = Wind.CurrentWindSpeed + rand.NextDouble() * 4 - 2;
@@ -37,7 +143,7 @@ namespace WindPi.ViewModels
             if (Wind.CurrentWindSpeed > 30) Wind.CurrentWindSpeed = 30;
 
             if (Wind.Running)
-            {            
+            {
                 Wind.EffectiveWindSpeed = Wind.CurrentWindSpeed;
             }
             else
@@ -48,7 +154,7 @@ namespace WindPi.ViewModels
 
             var telemetryDataPoint = new
             {
-                deviceId = DeviceId,
+                deviceId = AppSettings.DeviceId,
                 windSpeed = Wind.CurrentWindSpeed,
                 powerOutput = Wind.PowerOutput,
                 temperatue = Sensors.Temperature,
@@ -64,39 +170,54 @@ namespace WindPi.ViewModels
 
                 System.Diagnostics.Debug.WriteLine("{0} > Sending message: {1}", DateTime.Now, messageString);
 
-                Debug.LastMessageSent = DateTime.Now.ToString();
+                Debug.LastMessageSent = DateTime.Now.ToString(CultureInfo.InvariantCulture);
             }
             catch (Exception ex)
             {
                 Debug.LastMessageSent = "Error: " + ex.Message;
-                System.Diagnostics.Debug.WriteLine("{0} > Error sending message: {1}", DateTime.Now, ex.Message);
+                System.Diagnostics.Debug.WriteLine($"{DateTime.Now} > Error sending message: {ex.Message}");
             }
-            
         }
 
-        public async void ReceiveCloudToDeviceAsync()
+        /// <summary>
+        /// receive cloud to device as an asynchronous operation.
+        /// </summary>
+        /// <returns>Task.</returns>
+        public async Task ReceiveCloudToDeviceAsync()
         {
-            var receivedMessage = await _deviceClient.ReceiveAsync();
-            if (receivedMessage == null) return;
+            Message receivedMessage;
+            try
+            {
+                receivedMessage = await _deviceClient.ReceiveAsync();
 
-            var message = Encoding.ASCII.GetString(receivedMessage.GetBytes());
-            
-            await _deviceClient.CompleteAsync(receivedMessage);
+                if (receivedMessage == null) return;
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine($"{DateTime.Now} > Error sending message: {e.Message}");
+                return;
+            }
 
-            ProcessMessage(message);
-        }
+            //the message was received, get the data and convert it to bytes
+            string message = Encoding.ASCII.GetString(receivedMessage.GetBytes());
 
-        private void ProcessMessage(string message)
-        {            
+            try
+            {
+                await _deviceClient.CompleteAsync(receivedMessage); //complete the call
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine($"{DateTime.Now} > Error sending message: {e.Message}");
+            }
+
             switch (message)
             {
-                case "STOP":
-                    Wind.Running = false;
-                    break;
                 case "START":
                     Wind.Running = true;
                     break;
-                
+                default:
+                    Wind.Running = false;
+                    break;
             }
         }
     }
