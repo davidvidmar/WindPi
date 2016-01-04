@@ -8,9 +8,9 @@ namespace WindPi.ViewModels
 {
     public class SensorsViewModel
     {
-        private const string IotHubUri = "WindHub.azure-devices.net";
-        private const string DeviceId = "RPi-Wind-1";
-        private const string DeviceKey = "aaRE0MhoR5XQBZTecv3VO5mfPymgOJtmbYn4ZusGlzU=";
+        private const string IotHubUri = "<insert-your-iothub-url>";
+        private const string DeviceId  = "<insert-your-registered-device-id>"
+        private const string DeviceKey = "<insert-your-registered-device-key>";
 
         private readonly DeviceClient _deviceClient;
 
