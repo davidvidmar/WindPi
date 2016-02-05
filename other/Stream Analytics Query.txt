@@ -1,0 +1,16 @@
+SELECT
+    deviceId as DeviceID,        
+    System.TimeStamp as OutTime,
+    MAX(windSpeed) as WindSpeed,
+    MAX(temperature) as Temperature,
+    MAX(light) as Light,
+    MAX(powerOutput) as PowerOutput
+INTO
+    WindPowerBI
+FROM
+    WindHub TIMESTAMP BY EventProcessedUtcTime
+WHERE
+    EventProcessUtcTime > DateAdd(Hour, -3, Now)
+GROUP BY
+    DeviceID,
+    TumblingWindow(second, 10)

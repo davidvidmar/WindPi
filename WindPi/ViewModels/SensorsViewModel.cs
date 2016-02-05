@@ -9,7 +9,7 @@ namespace WindPi.ViewModels
     public class SensorsViewModel
     {
         private const string IotHubUri = "<insert-your-iothub-url>";
-        private const string DeviceId  = "<insert-your-registered-device-id>"
+        private const string DeviceId = "<insert-your-registered-device-id>";
         private const string DeviceKey = "<insert-your-registered-device-key>";
 
         private readonly DeviceClient _deviceClient;
@@ -24,7 +24,15 @@ namespace WindPi.ViewModels
             Wind = new WindData {Running = true};
             Debug = new DebugData();
 
-            _deviceClient = DeviceClient.Create(IotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(DeviceId, DeviceKey), TransportType.Http1);                        
+            try
+            {
+                _deviceClient = DeviceClient.Create(IotHubUri, new DeviceAuthenticationWithRegistrySymmetricKey(DeviceId, DeviceKey), TransportType.Http1);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"IoT Hub initialization failed: " + ex.Message);
+            }
+            
         }
 
         public async void SendDeviceToCloudMessagesAsync()
@@ -60,11 +68,17 @@ namespace WindPi.ViewModels
                 var messageString = JsonConvert.SerializeObject(telemetryDataPoint);
                 var message = new Message(Encoding.ASCII.GetBytes(messageString));
 
-                await _deviceClient.SendEventAsync(message);
-
-                System.Diagnostics.Debug.WriteLine("{0} > Sending message: {1}", DateTime.Now, messageString);
-
-                Debug.LastMessageSent = DateTime.Now.ToString();
+                if (_deviceClient != null)
+                {
+                    await _deviceClient.SendEventAsync(message);
+                    System.Diagnostics.Debug.WriteLine("{0} > Sending message: {1}", DateTime.Now, messageString);
+                    Debug.LastMessageSent = DateTime.Now.ToString();
+                }
+                else
+                {
+                    Debug.LastMessageSent = "IoT Hub is not initialized. Nothing is being sent.";
+                    System.Diagnostics.Debug.WriteLine("IoT Hub is not initialized. Nothing is being sent.");
+                }
             }
             catch (Exception ex)
             {
@@ -76,6 +90,10 @@ namespace WindPi.ViewModels
 
         public async void ReceiveCloudToDeviceAsync()
         {
+            // bail out if IoT hub is not initialized
+            if (_deviceClient == null) return;
+
+            // receive messages
             var receivedMessage = await _deviceClient.ReceiveAsync();
             if (receivedMessage == null) return;
 
