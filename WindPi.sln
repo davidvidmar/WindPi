@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindPi", "WindPi\WindPi.csproj", "{07975D7F-C923-4718-B593-A7F33BE8B455}"
 EndProject
@@ -19,7 +19,9 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{07975D7F-C923-4718-B593-A7F33BE8B455}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{07975D7F-C923-4718-B593-A7F33BE8B455}.Debug|Any CPU.ActiveCfg = Debug|ARM
+		{07975D7F-C923-4718-B593-A7F33BE8B455}.Debug|Any CPU.Build.0 = Debug|ARM
+		{07975D7F-C923-4718-B593-A7F33BE8B455}.Debug|Any CPU.Deploy.0 = Debug|ARM
 		{07975D7F-C923-4718-B593-A7F33BE8B455}.Debug|ARM.ActiveCfg = Debug|ARM
 		{07975D7F-C923-4718-B593-A7F33BE8B455}.Debug|ARM.Build.0 = Debug|ARM
 		{07975D7F-C923-4718-B593-A7F33BE8B455}.Debug|ARM.Deploy.0 = Debug|ARM
@@ -58,5 +60,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CD3774F2-2A1C-45EE-8F21-57E6900A41B5}
 	EndGlobalSection
 EndGlobal
