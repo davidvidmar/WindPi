@@ -32,7 +32,7 @@ namespace WindPi.Views
         {
             _hat = await FEZHAT.CreateAsync();
 
-            _timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(500)};
+            _timer = new DispatcherTimer {Interval = TimeSpan.FromMilliseconds(3000)};
             _timer.Tick += Timer_Tick;
             _timer.Start();
         }
